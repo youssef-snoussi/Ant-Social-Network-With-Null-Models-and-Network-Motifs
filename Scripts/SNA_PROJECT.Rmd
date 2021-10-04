@@ -1,0 +1,212 @@
+---
+title: "Social Network Analysis Project: Ant colony network analysis"
+output: html_notebook
+---
+
+```{r}
+source("utils.R")
+path <- '../Files'
+
+graphList <- create_graphs(path, columns = c("v1","v2","weight"))
+graphs <- list(graphList[[1]],graphList[[20]],graphList[[41]])
+gstat0 <- graph_stats(graphs)
+summary(gstat0)
+```
+
+```{r}
+gwgt <- to_list(for (g in graphs) E(g)$weight)
+```
+```{r}
+summary(gwgt[[1]])
+```
+
+```{r}
+plot(graphs[[1]]-E(graphs[[1]])[weight < 2], vertex.label=NA, vertex.size=5, edge.curved=T, layout=layout_with_fr)
+```
+
+```{r}
+summary(gwgt[[2]])
+```
+```{r}
+plot(graphs[[2]]-E(graphs[[2]])[weight < 2], vertex.label=NA, vertex.size=5, edge.curved=T, layout=layout_with_fr)
+```
+
+```{r}
+summary(gwgt[[3]])
+```
+
+```{r}
+plot(graphs[[3]]-E(graphs[[3]])[weight < 2 ], vertex.label=NA, vertex.size=5, edge.curved=T, layout=layout_with_fr)
+```
+# As we can see the most of the weights is below 10 while the maximum weights is  between 73 and 134 which make a lot of edges have weights less that the mean, with fewer greater than the mean; let's visualize the 1st graph and last graph
+
+# Calculating triad subgraphs and their weights for the first and the last graphs
+```{r}
+triad_subs1 <- triad_cli(graphList[[1]])
+triad_subs20 <- triad_cli(graphList[[20]])
+triad_subs41 <- triad_cli(graphList[[41]])
+```
+
+```{r}
+# Calculating the weights for the 1st the middle and the last graph's sub graphs
+weights1 <- to_vec(for (t in triad_subs1) sub_weights(graphList[[1]], t))
+summary(weights1)
+```
+
+```{r}
+# Calculating the weights for the 1st the middle and the last graph's sub graphs
+weights20 <- to_vec(for (t in triad_subs20) sub_weights(graphList[[20]], t))
+summary(weights20)
+```
+
+```{r}
+# Calculating the weights for the 1st the middle and the last graph's sub graphs
+weights41 <- to_vec(for (t in triad_subs41) sub_weights(graphList[[41]], t))
+summary(weights41)
+```
+
+# Creating random graphs for each graph
+```{r}
+# Random graphs
+nm <- to_list(for (g in graphs) nulmodel(g))
+Rtriads <- to_list(for (g in nm) triad_cli(g))
+# Graphs statistics
+gstat <- graph_stats(nm)
+Rwgt <- to_vec(for (g in nm) E(g)$weight)
+summary(gstat)
+```
+
+```{r}
+summary(Rwgt[[1]])
+```
+```{r}
+plot(nm[[1]]-E(nm[[1]])[weight < 36], vertex.label=NA, vertex.size=5, edge.curved=T, layout=layout_with_fr)
+```
+```{r}
+summary(Rwgt[[2]])
+```
+```{r}
+plot(nm[[2]]-E(nm[[2]])[weight < 43], vertex.label=NA, vertex.size=5, edge.curved=T, layout=layout_with_fr)
+```
+```{r}
+summary(Rwgt[[3]])
+```
+```{r}
+plot(nm[[3]]-E(nm[[3]])[weight < 115], vertex.label=NA, vertex.size=5, edge.curved=T, layout=layout_with_fr)
+```
+```{r}
+# Random graphs
+nm2 <- to_list(for (g in graphs) nulmodel(g))
+Rtriads2 <- to_list(for (g in nm2) triad_cli(g))
+# Graphs statistics
+gstat2 <- graph_stats(nm2)
+Rwgt2 <- to_vec(for (g in nm2) E(g)$weight)
+summary(gstat2)
+```
+
+
+```{r}
+summary(Rwgt2[[1]])
+```
+```{r}
+plot(nm2[[1]]-E(nm2[[1]])[weight < 124], vertex.label=NA, vertex.size=5, edge.curved=T, layout=layout_with_fr)
+```
+
+```{r}
+summary(Rwgt2[[2]])
+```
+```{r}
+plot(nm2[[2]]-E(nm2[[2]])[weight < 124], vertex.label=NA, vertex.size=5, edge.curved=T, layout=layout_with_fr)
+```
+
+```{r}
+summary(Rwgt2[[3]])
+```
+```{r}
+plot(nm2[[3]]-E(nm2[[3]])[weight < 110], vertex.label=NA, vertex.size=5, edge.curved=T, layout=layout_with_fr)
+```
+
+
+```{r}
+# Random graphs
+nm3 <- to_list(for (g in graphs) nulmodel(g))
+Rtriads3 <- to_list(for (g in nm3) triad_cli(g))
+# Graphs stats
+gstat3 <- graph_stats(nm3)
+Rgwt3 <- to_vec(for (g in nm3) E(g)$weight)
+summary(gstat3)
+```
+
+```{r}
+summary(Rgwt3[[1]])
+```
+```{r}
+plot(nm3[[1]]-E(nm3[[1]])[weight < 77], vertex.label=NA, vertex.size=5, edge.curved=T, layout=layout_with_fr)
+```
+
+```{r}
+summary(Rgwt3[[2]])
+```
+```{r}
+plot(nm3[[2]]-E(nm3[[2]])[weight < 11], vertex.label=NA, vertex.size=5, edge.curved=T, layout=layout_with_fr)
+```
+```{r}
+summary(Rgwt3[[3]])
+```
+```{r}
+plot(nm3[[3]]-E(nm3[[3]])[weight < 11], vertex.label=NA, vertex.size=5, edge.curved=T, layout=layout_with_fr)
+```
+
+
+# As we can see the degree distribution doesn't change with the randomized graph, that's because       
+# they're were built in a manner to keep that property for all the random graphs, while it just change 
+# the interactions between the nodes.
+# Normally it is required to create more than 3 random models but it requires a big computational power 
+# to calculate triad subgraphs and their weights so we're just limiting ourselves to just 3 random     
+# models and we will calculate the weights for just some graphs which seem to be important
+
+```{r}
+Rweights1 <- to_vec(for (t in Rtriads[[1]]) sub_weights(nm[[1]], t))
+summary(Rweights1)
+```
+
+```{r}
+Rweights20 <- to_vec(for (t in Rtriads[[2]]) sub_weights(nm[[2]], t))
+summary(Rweights20)
+```
+
+```{r}
+Rweights3 <- to_vec(for (t in Rtriads[[3]]) sub_weights(nm[[3]], t))
+summary(Rweights3)
+```
+
+```{r}
+R2weights1 <- to_vec(for (t in Rtriads2[[1]]) sub_weights(nm2[[1]], t))
+summary(R2weights1)
+```
+
+```{r}
+R2weights2 <- to_vec(for (t in Rtriads2[[2]]) sub_weights(nm2[[2]], t))
+summary(R2weights2)
+```
+
+```{r}
+R2weights3 <- to_vec(for (t in Rtriads2[[3]]) sub_weights(nm2[[3]], t))
+summary(R2weights3)
+```
+
+
+```{r}
+R3weights1 <- to_vec(for (t in Rtriads3[[1]]) sub_weights(nm[[1]], t))
+summary(R3weights1)
+```
+
+```{r}
+R3weights2 <- to_vec(for (t in Rtriads3[[2]]) sub_weights(nm[[2]], t))
+summary(R3weights2)
+```
+
+```{r}
+R3weights3 <- to_vec(for (t in Rtriads3[[3]]) sub_weights(nm[[3]], t))
+summary(R3weights3)
+```
